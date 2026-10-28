@@ -1,0 +1,74 @@
+=== 1. ESTADO DE LOS SERVICIOS (docker compose ps) ===
+NAME            IMAGE                                                                     COMMAND                  SERVICE   CREATED          STATUS                    PORTS
+ae4-app-1       sha256:8cf4e9d2864d7c473f6ea0c42c7348d2f8208262f483938422a970c1a1241c86   "gunicorn config.wsg…"   app       15 minutes ago   Up 13 minutes (healthy)   8000/tcp
+ae4-db-1        postgres:16-alpine                                                        "docker-entrypoint.s…"   db        15 minutes ago   Up 13 minutes (healthy)   5432/tcp
+ae4-nginx-1     nginx:1.27-alpine                                                         "/docker-entrypoint.…"   nginx     15 minutes ago   Up 13 minutes             0.0.0.0:8000->80/tcp, [::]:8000->80/tcp
+ae4-pgadmin-1   dpage/pgadmin4:9.17                                                       "/entrypoint.sh"         pgadmin   15 minutes ago   Up 13 minutes (healthy)   443/tcp, 0.0.0.0:5050->80/tcp, [::]:5050->80/tcp
+
+=== 2. PAGINA PRINCIPAL A TRAVES DE NGINX (curl /) ===
+HTTP/1.1 200 OK
+Server: nginx/1.27.5
+Date: Wed, 28 Oct 2026 20:59:47 GMT
+Content-Type: text/html; charset=utf-8
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+<!doctype html>
+<html lang="es">
+<head><meta charset="utf-8"><title>"Hola desde el servidor de aplicaciones"</title></head>
+<body>
+<h1>"Hola desde el servidor de aplicaciones"</h1>
+<p>Contenedor: <strong>2f69cc70405a</strong></p>
+<p>Visitas totales: <strong>1</strong></p>
+</body>
+</html>
+
+=== 3. SALUD DEL SERVIDOR DE APLICACIONES (curl /healthz) ===
+HTTP/1.1 200 OK
+Server: nginx/1.27.5
+Date: Wed, 28 Oct 2026 20:59:47 GMT
+Content-Type: application/json
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+{"status": "ok", "hostname": "2f69cc70405a"}
+=== 4. ENDPOINT API LUGARES (curl /api/lugares) ===
+{"lugares": [{"id": 1, "name": "Tokio", "visited": false}, {"id": 2, "name": "Budapest", "visited": true}, {"id": 3, "name": "Nairobi", "visited": false}, {"id": 4, "name": "Berl\u00edn", "visited": true}, {"id": 5, "name": "Lisboa", "visited": true}, {"id": 6, "name": "Denver", "visited": false}, {"id": 7, "name": "Mosc\u00fa", "visited": false}, {"id": 8, "name": "Oslo", "visited": false}, {"id": 9, "name": "R\u00edo", "visited": true}, {"id": 10, "name": "Cincinnati", "visited": false}, {"id": 11, "name": "Helsinki", "visited": false}], "total": 11}
+=== 5. COMPROBACION DE BASE DE DATOS CON PSQL ===
+ count 
+-------
+    11
+(1 row)
+
+ id |    name    | visited 
+----+------------+---------
+  1 | Tokio      | f
+  2 | Budapest   | t
+  3 | Nairobi    | f
+  4 | Berlín     | t
+  5 | Lisboa     | t
+  6 | Denver     | f
+  7 | Moscú      | f
+  8 | Oslo       | f
+  9 | Río        | t
+ 10 | Cincinnati | f
+ 11 | Helsinki   | f
+(11 rows)
+
+
+=== 6. COMPROBACION DE PGADMIN (/misc/ping) ===
+HTTP/1.1 200 OK
+Server: gunicorn
+Date: Wed, 28 Oct 2026 20:59:48 GMT
+Connection: keep-alive
+Content-Type: text/html; charset=utf-8
+Content-Length: 4
+Vary: Accept-Encoding
+X-Frame-Options: SAMEORIGIN
+Content-Security-Policy: default-src 'self' ws: http: data: blob:; script-src 'self' 'nonce-VxJsZMq1jmdU8rC5VtdeBQ'; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'self';
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+Cross-Origin-Opener-Policy: same-origin
+Set-Cookie: pga4_session=504380f0-b508-4f3c-a14f-f7ddca00c2e2!GA4QABXhXHDgNHyXV4602atglTSw0XOGnNbggWPYhDA=; Expires=Thu, 29 Oct 2026 20:59:48 GMT; HttpOnly; Path=/; SameSite=Lax
+
+PING
