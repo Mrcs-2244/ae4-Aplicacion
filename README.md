@@ -2,7 +2,7 @@
 
 - **Alumno:** Marcos Rodríguez Hernández
 - **Módulo:** Despliegue de Aplicaciones Web (DPL) — UT4
-- **Repositorio remoto:** `https://github.com/mrcs-2244/ae4.git`
+- **Repositorio remoto:** `https://github.com/Mrcs-2244/ae4-Aplicacion.git`
 
 ---
 
